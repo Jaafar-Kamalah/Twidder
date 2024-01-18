@@ -1,0 +1,36 @@
+body {
+    background-color: aquamarine;
+}
+
+.main-container {
+    width: 600px;
+    height: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+
+    background-color: blue;
+}
+
+.logo-container {
+    width: 340px;
+    height: 400px;
+    float: left;
+    background-color: green;
+}
+
+.login-container {
+    width: 250px;
+    height: 100px;
+    float: left;
+    margin-left: 10px;
+    background-color: purple;
+}
+
+.signup-container {
+    width: 250px;
+    height: 300px;
+    float: left;
+    margin-left: 10px;
+    background-color: red;
+}
