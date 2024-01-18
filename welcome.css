@@ -1,5 +1,5 @@
 body {
-    background-color: aquamarine;
+    background-color: #f0f2f5
 }
 
 .main-container {
@@ -9,14 +9,14 @@ body {
     margin-right: auto;
     margin-top: 100px;
 
-    background-color: blue;
+    /* background-color: blue; */
 }
 
 .logo-container {
     width: 340px;
     height: 400px;
     float: left;
-    background-color: green;
+    /* background-color: green; */
 }
 
 .login-container {
@@ -24,13 +24,47 @@ body {
     height: 100px;
     float: left;
     margin-left: 10px;
-    background-color: purple;
+    padding: 5px, 95px;
+    background-color: white;
 }
 
 .signup-container {
     width: 250px;
-    height: 300px;
+    height: 290px;
     float: left;
     margin-left: 10px;
-    background-color: red;
+    margin-top: 10px;
+    background-color: white;
 }
+
+label {
+    margin-left: 5px;
+}
+
+input, select {
+    margin-top: 10px;
+    width: 150px;
+}
+
+.submit {
+    color: white;
+
+
+    display: block;
+    width: 95%;
+    height: 20px;
+
+    margin: 10px auto;
+
+    border: none;
+    border-radius: 3px;
+}
+
+#login {
+    background-color: #1877f2;
+}
+
+#signup {
+    background-color: #42b72a;
+}
+
