@@ -36,21 +36,26 @@ body {
     background-color: white;
 }
 
-.login-container div, .signup-container div {
+.login-container div,
+.signup-container div {
     display: flow-root;
     margin-top: 10px;
 }
 
-.login-container div input, .signup-container div input, .signup-container div select {
+.login-container div input,
+.signup-container div input,
+.signup-container div select {
     float: right;
     margin-right: 5px;
-    width: 55%;
+    width: 50%;
 }
 
-.login-container div label, .signup-container div label {
+.login-container div label,
+.signup-container div label {
     display: inline-block;
     margin-top: 2px;
     margin-left: 5px;
+    font-size: 15px;
 }
 
 .submit {
