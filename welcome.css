@@ -24,7 +24,6 @@ body {
     height: 100px;
     float: left;
     margin-left: 10px;
-    padding: 5px, 95px;
     background-color: white;
 }
 
@@ -37,13 +36,21 @@ body {
     background-color: white;
 }
 
-label {
-    margin-left: 5px;
+.login-container div, .signup-container div {
+    display: flow-root;
+    margin-top: 10px;
 }
 
-input, select {
-    margin-top: 10px;
-    width: 150px;
+.login-container div input, .signup-container div input, .signup-container div select {
+    float: right;
+    margin-right: 5px;
+    width: 55%;
+}
+
+.login-container div label, .signup-container div label {
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 5px;
 }
 
 .submit {
@@ -67,4 +74,3 @@ input, select {
 #signup {
     background-color: #42b72a;
 }
-
