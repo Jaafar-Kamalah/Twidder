@@ -79,3 +79,15 @@ body {
 #signup {
     background-color: #42b72a;
 }
+
+#welcome-error {
+    display: none;
+    background-color: rgb(231, 126, 126);
+    border: 2px solid;
+    height: 50px;
+    width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    text-align: center;
+}

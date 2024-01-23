@@ -6,14 +6,14 @@
     <link href="client.css" type="text/css" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
     <script src="serverstub.js" type="text/javascript"></script>
-    <script id="welcome-view" type=”text/view”>
+    <script id="welcome-view" type=”text/view>
         <div class="welcome-view-body">
             <div class="logo-container">
                 <img src="Twidder_custom_logo.png" alt="Twidder logo and slogan.">
             </div>
-    
+            
             <div class="login-container">
-                <form>
+                <form action="#" onsubmit="validateLogin(this);return false;">
                     <div>
                         <label for="email">Email</label>
                         <input id="email" name="email" type="email" required>
@@ -21,7 +21,7 @@
     
                     <div>
                         <label for="login-password">Password</label>
-                        <input id="login-password" name="login-password" type="password" required>
+                        <input id="login-password" name="login-password" type="password" minlength="8" required>
                     </div>
     
                     <input id="login" class="submit" type="submit" value="Login">
@@ -29,15 +29,15 @@
             </div>
     
             <div class="signup-container">
-                <form>
+                <form action="#" onsubmit="validateSignup(this);return false;">
                     <div>
                         <label for="first-name">First Name</label>
                         <input id="first-name" name="first-name" type="text" required>
                     </div>
     
                     <div>
-                        <label for="last-name">Last Name</label>
-                        <input id="last-name" name="last-name" type="text" required>
+                        <label for="family-name">Family Name</label>
+                        <input id="family-name" name="family-name" type="text" required>
                     </div>
     
                     <div>
@@ -66,7 +66,7 @@
     
                     <div>
                         <label for="signup-password">Password</label>
-                        <input id="signup-password" name="signup-password" type="password" required>
+                        <input id="signup-password" name="signup-password" type="password" minlength="8" required>
     
                     </div>
     
@@ -79,6 +79,10 @@
                 </form>
             </div>
         </div>
+        
+        <div id="welcome-error">      
+            <p id="welcome-error-message"></p>
+        </div>
     </script>
     <script id="profile-view" type=”text/view”>
         <h1>Profile View</h1>
@@ -87,7 +91,6 @@
 
 <body>
     <div id="view">
-
     </div>
 </body>
 
