@@ -1,6 +1,13 @@
 displayView = function () {
     // the code required to display a view
-    document.getElementById("view").innerHTML = document.getElementById("welcome-view").innerHTML;
+    var token = localStorage.getItem("token")
+    if (token == null) {
+        document.getElementById("view").innerHTML = document.getElementById("welcome-view").innerHTML;
+    }
+    else {
+        document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
+    }
+
 };
 window.onload = function () {
     //code that is executed as the page is loaded.
@@ -9,8 +16,18 @@ window.onload = function () {
 };
 
 function validateLogin(formData) {
-    console.log(formData);
-    alert(formData.email.value);
+    var email = formData["login-email"].value;
+    var password = formData["login-password"].value;
+    let loginResult = serverstub.signIn(email, password);
+
+    if (loginResult.success) {
+        localStorage.setItem("token", loginResult.data)
+        displayView();
+    }
+    else {
+        document.getElementById("welcome-error").style.display = "block";
+        document.getElementById("welcome-error-message").innerHTML = loginResult.message;
+    }
 }
 
 function validateSignup(formData) {
@@ -44,7 +61,9 @@ function validateSignup(formData) {
     var signupResult = serverstub.signUp(account);
 
     if (signupResult.success) {
-        document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
+        let loginResult = serverstub.signIn(email, password);
+        localStorage.setItem("token", loginResult.data)
+        displayView();
     }
     else {
         document.getElementById("welcome-error").style.display = "block";
