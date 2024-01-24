@@ -38,22 +38,15 @@ function validateSignup(formData) {
         return;
     }
 
-    var email = formData["signup-email"].value;
-    var password = formData["signup-password"].value;
-    var firstname = formData["first-name"].value;
-    var familyname = formData["family-name"].value;
-    var gender = formData["gender"].value;
-    var city = formData["city"].value;
-    var country = formData["country"].value;
-
+    // Parse data from form into an object
     var account = {
-        email: email,
-        password: password,
-        firstname: firstname,
-        familyname: familyname,
-        gender: gender,
-        city: city,
-        country: country
+        email: formData["signup-email"].value,
+        password: formData["signup-password"].value,
+        firstname: formData["first-name"].value,
+        familyname: formData["family-name"].value,
+        gender: formData["gender"].value,
+        city: formData["city"].value,
+        country: formData["country"].value
     };
 
     console.log(account);
@@ -61,7 +54,7 @@ function validateSignup(formData) {
     var signupResult = serverstub.signUp(account);
 
     if (signupResult.success) {
-        let loginResult = serverstub.signIn(email, password);
+        let loginResult = serverstub.signIn(account.email, account.password);
         localStorage.setItem("token", loginResult.data)
         displayView();
     }
@@ -69,4 +62,27 @@ function validateSignup(formData) {
         document.getElementById("welcome-error").style.display = "block";
         document.getElementById("welcome-error-message").innerHTML = signupResult.message;
     }
+}
+
+function selectTab(selected)
+{
+    // Clear highlighting from all tabs
+    tabs = document.getElementsByClassName("tab");
+    for (const tab of tabs) {
+        tab.style.border = "0";
+        tab.style.color = "black";
+    }
+
+    // Highlight selected tab
+    document.getElementById(selected+"-tab").style["border-bottom"] = "4px solid #1877f2";
+    document.getElementById(selected+"-tab").style["color"] = "#1877f2";
+    
+    // Hide all panels
+    panels = document.getElementsByClassName("panel");
+    for (const panel of panels) {
+        panel.style.display = "none";
+    }
+
+    // Show selected panel
+    document.getElementById(selected+"-panel").style.display = "block";
 }
