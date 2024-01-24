@@ -14,7 +14,7 @@
             </div>
         
             <div class="login-container">
-                <form action="#" onsubmit='validateLogin(this);return false;'>
+                <form action="#" onsubmit='Login(this);return false;'>
                     <div>
                         <label for="login-email">Email</label>
                         <input id="login-email" name="login-email" type="email" required>
@@ -25,12 +25,12 @@
                         <input id="login-password" name="login-password" type="password" minlength="8" required>
                     </div>
         
-                    <input id="login" class="btn" type="submit" value="Login">
+                    <input class="btn blue" type="submit" value="Login">
                 </form>
             </div>
         
             <div class="signup-container">
-                <form action="#" onsubmit='validateSignup(this);return false;'>
+                <form action="#" onsubmit='Signup(this);return false;'>
                     <div>
                         <label for="first-name">First Name</label>
                         <input id="first-name" name="first-name" type="text" required>
@@ -76,7 +76,7 @@
                         <input id="signup-repeat-password" name="signup-reapeat-password" type="password" required>
                     </div>
         
-                    <input id="signup" class="btn" type="submit" value="Sign Up">
+                    <input class="btn green" type="submit" value="Sign Up">
                 </form>
             </div>
         </div>
@@ -99,7 +99,22 @@
         </div>
 
         <div class="panel" id="home-panel">
-            <p>Home content</p>
+            <div class="centered-container">
+                <h3>Account Information</h3>
+                <p id="account-information"></p>
+            </div>
+            <div class="centered-container">
+                <h3>Post Message</h3>
+                <form action="#" onsubmit='postMessage(this);return false;'>
+                    <textarea id="post"></textarea>
+                    <input class="btn green" type="submit" value="Post Message">
+                </form>
+            </div>
+            <div class="centered-container">
+                <h3>Message Wall</h3>
+                <button class="btn blue" onclick='refreshWall()'>Refresh Wall</button>
+                <p id="message-wall"></p>
+            </div>
         </div>
         <div class="panel" id="browse-panel">
             <p>Browse content</p>
@@ -107,7 +122,7 @@
         <div class="panel" id="account-panel">
             <div class="centered-container">
                 <h3>Change Password</h3>
-                <form action="#" onsubmit='validateChangePassword(this);return false;'>
+                <form action="#" onsubmit='ChangePassword(this);return false;'>
                     <div class="change-password-field-container"> 
                     <label for="change-password-old">Old Password </label>
                         <input id="change-password-old" type="password" name="change-password-old" required/>
@@ -120,13 +135,13 @@
                         <label for="change-password-repeat">Repeat New Password </label>
                         <input id="change-password-repeat" type="password" name="change-password-repeat" required/>
                     </div>
-                    <input id="change-password" class="btn" type="submit" value="Change Password">
+                    <input class="btn orange" type="submit" value="Change Password">
                 </form>
                 <div id="change-password-message-container"><p id="change-password-message"></p></div>
             </div>
             <div class="centered-container">
                 <h3>Session</h3>
-                <button id="log-out" class="btn" onclick='logOut()'>Log Out</button>
+                <button class="btn red" onclick='logout()'>Log Out</button>
             </div>
         </div>
 

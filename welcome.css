@@ -63,7 +63,7 @@ body {
 
 
     display: block;
-    width: 95%;
+    width: 90%;
     height: 20px;
 
     margin: 10px auto;
@@ -73,11 +73,11 @@ body {
     cursor: pointer;
 }
 
-#login {
+.blue {
     background-color: #1877f2;
 }
 
-#signup {
+.green {
     background-color: #42b72a;
 }
 

@@ -6,6 +6,13 @@ displayView = function () {
     }
     else {
         document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
+
+        // Load account information in home tab
+        let accountInformation = serverstub.getUserDataByToken(token).data;
+        document.getElementById("account-information").innerHTML = 
+        "Email: " + accountInformation.email + "<br>First Name: " + accountInformation.firstname + 
+        "<br>Family Name: " + accountInformation.familyname + "<br>Gender: " + accountInformation.gender +
+         "<br>City: " + accountInformation.city + "<br>Country: " + accountInformation.country;
     }
 
 };
@@ -15,7 +22,7 @@ window.onload = function () {
     displayView();
 };
 
-function validateLogin(formData) {
+function Login(formData) {
     var email = formData["login-email"].value;
     var password = formData["login-password"].value;
     let loginResult = serverstub.signIn(email, password);
@@ -30,7 +37,7 @@ function validateLogin(formData) {
     }
 }
 
-function validateSignup(formData) {
+function Signup(formData) {
     // Password Validation
     if (formData["signup-password"].value != formData["signup-repeat-password"].value) {
         document.getElementById("welcome-error").style.display = "block";
@@ -86,7 +93,7 @@ function selectTab(selected) {
     document.getElementById(selected + "-panel").style.display = "block";
 }
 
-function validateChangePassword(formData) {
+function ChangePassword(formData) {
     if (formData["change-password-new"].value != formData["change-password-repeat"].value) {
         document.getElementById("change-password-message-container").style["background-color"] = "rgb(231, 126, 126)";
         document.getElementById("change-password-message-container").style.display = "block";
@@ -105,10 +112,29 @@ function validateChangePassword(formData) {
     document.getElementById("change-password-message").innerHTML = changePasswordResult.message;
 }
 
-
-function logOut() {
+function logout() {
     token = localStorage.getItem("token");
     serverstub.signOut(token);
     localStorage.removeItem("token");
     displayView();
+}
+
+
+function postMessage(formData) {
+    if (formData.post.value == "") {
+        return;
+    }
+    let token = localStorage.getItem("token");
+    serverstub.postMessage(token, formData.post.value, serverstub.getUserDataByToken(token).data.email);
+    console.log(formData.post.value);
+    document.getElementById("post").value = "";
+}
+
+function refreshWall() {
+    messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
+    document.getElementById("message-wall").innerHTML = "";
+    for (const message of messages) {
+        console.log(message);
+        document.getElementById("message-wall").innerHTML += "<hr>" + message.content;
+    }
 }

@@ -45,11 +45,8 @@ body {
     display: none;
 }
 
-#account-panel {
-    text-align: center;
-}
-
 .centered-container {
+    text-align: center;
     width: 400px;
     padding-bottom: 5px;
     border-radius: 10px;
@@ -77,9 +74,12 @@ body {
     margin-top: 0;
 }
 
-#change-password {
+.orange {
     background-color: #f79f07;
-    margin-bottom: 5px;
+}
+
+.red {
+    background-color: rgb(223, 41, 41);
 }
 
 #change-password-message-container {
@@ -95,6 +95,7 @@ body {
     margin: 5px;
 }
 
-#log-out {
-    background-color: red;
+textarea {
+    width: 80%;
+    height: 50px;
 }
