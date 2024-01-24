@@ -7,76 +7,76 @@
     <link href="profile.css" type="text/css" rel="stylesheet">
     <script src="client.js" type="text/javascript"></script>
     <script src="serverstub.js" type="text/javascript"></script>
-    <script id="welcome-view" type='text/view'>
+    <script id="welcome-view" type='text/html'>
         <div class="welcome-view-body">
             <div class="logo-container">
                 <img src="Twidder_custom_logo.png" alt="Twidder logo and slogan.">
             </div>
-            
+        
             <div class="login-container">
                 <form action="#" onsubmit='validateLogin(this);return false;'>
                     <div>
                         <label for="login-email">Email</label>
                         <input id="login-email" name="login-email" type="email" required>
                     </div>
-    
+        
                     <div>
                         <label for="login-password">Password</label>
                         <input id="login-password" name="login-password" type="password" minlength="8" required>
                     </div>
-    
-                    <input id="login" class="submit" type="submit" value="Login">
+        
+                    <input id="login" class="btn" type="submit" value="Login">
                 </form>
             </div>
-    
+        
             <div class="signup-container">
-                <form action="#" onsubmit='validateSignup(this);return false;''>
+                <form action="#" onsubmit='validateSignup(this);return false;'>
                     <div>
                         <label for="first-name">First Name</label>
                         <input id="first-name" name="first-name" type="text" required>
                     </div>
-    
+        
                     <div>
                         <label for="family-name">Family Name</label>
                         <input id="family-name" name="family-name" type="text" required>
                     </div>
-    
+        
                     <div>
                         <label for="gender">Gender</label>
                         <select id="gender" name="gender">
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
-    
+        
                     </div>
-    
+        
                     <div>
                         <label for="city">City</label>
                         <input id="city" name="city" type="text" required>
                     </div>
-    
+        
                     <div>
                         <label for="country">Country</label>
                         <input id="country" name="country" type="text" required>
                     </div>
-    
+        
                     <div>
                         <label for="signup-email">Email</label>
                         <input id="signup-email" name="signup-email" type="email" required>
                     </div>
-    
+        
                     <div>
                         <label for="signup-password">Password</label>
                         <input id="signup-password" name="signup-password" type="password" minlength="8" required>
-    
+        
                     </div>
-    
+        
                     <div>
                         <label for="signup-repeat-password">Repeat PSW</label>
                         <input id="signup-repeat-password" name="signup-reapeat-password" type="password" required>
                     </div>
-    
-                    <input id="signup" class="submit" type="submit" value="Sign Up">
+        
+                    <input id="signup" class="btn" type="submit" value="Sign Up">
                 </form>
             </div>
         </div>
@@ -85,7 +85,7 @@
             <p id="welcome-error-message"></p>
         </div>
     </script>
-    <script id="profile-view" type='text/view'>
+    <script id="profile-view" type='text/html'>
         <div id="panel">
             <div class="tab" id="home-tab" onclick='selectTab("home")'>
                 <h2>Home<h2>
@@ -105,7 +105,29 @@
             <p>Browse content</p>
         </div>
         <div class="panel" id="account-panel">
-            <p>Account content</p>
+            <div class="centered-container">
+                <h3>Change Password</h3>
+                <form action="#" onsubmit='validateChangePassword(this);return false;'>
+                    <div class="change-password-field-container"> 
+                    <label for="change-password-old">Old Password </label>
+                        <input id="change-password-old" type="password" name="change-password-old" required/>
+                    </div>
+                    <div class="change-password-field-container"> 
+                        <label for="change-password-new">New Password </label>
+                        <input id="change-password-new" type="password" name="change-password-new" minlength="8" required/>
+                    </div>
+                    <div class="change-password-field-container"> 
+                        <label for="change-password-repeat">Repeat New Password </label>
+                        <input id="change-password-repeat" type="password" name="change-password-repeat" required/>
+                    </div>
+                    <input id="change-password" class="btn" type="submit" value="Change Password">
+                </form>
+                <div id="change-password-message-container"><p id="change-password-message"></p></div>
+            </div>
+            <div class="centered-container">
+                <h3>Session</h3>
+                <button id="log-out" class="btn" onclick='logOut()'>Log Out</button>
+            </div>
         </div>
 
     </script>

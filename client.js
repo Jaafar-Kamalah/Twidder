@@ -32,7 +32,7 @@ function validateLogin(formData) {
 
 function validateSignup(formData) {
     // Password Validation
-    if(formData["signup-password"].value != formData["signup-repeat-password"].value) {
+    if (formData["signup-password"].value != formData["signup-repeat-password"].value) {
         document.getElementById("welcome-error").style.display = "block";
         document.getElementById("welcome-error-message").innerHTML = "Repeat PSW field did not match Password field. Try again.";
         return;
@@ -64,8 +64,7 @@ function validateSignup(formData) {
     }
 }
 
-function selectTab(selected)
-{
+function selectTab(selected) {
     // Clear highlighting from all tabs
     tabs = document.getElementsByClassName("tab");
     for (const tab of tabs) {
@@ -74,9 +73,9 @@ function selectTab(selected)
     }
 
     // Highlight selected tab
-    document.getElementById(selected+"-tab").style["border-bottom"] = "4px solid #1877f2";
-    document.getElementById(selected+"-tab").style["color"] = "#1877f2";
-    
+    document.getElementById(selected + "-tab").style["border-bottom"] = "4px solid #1877f2";
+    document.getElementById(selected + "-tab").style["color"] = "#1877f2";
+
     // Hide all panels
     panels = document.getElementsByClassName("panel");
     for (const panel of panels) {
@@ -84,5 +83,32 @@ function selectTab(selected)
     }
 
     // Show selected panel
-    document.getElementById(selected+"-panel").style.display = "block";
+    document.getElementById(selected + "-panel").style.display = "block";
+}
+
+function validateChangePassword(formData) {
+    if (formData["change-password-new"].value != formData["change-password-repeat"].value) {
+        document.getElementById("change-password-message-container").style["background-color"] = "rgb(231, 126, 126)";
+        document.getElementById("change-password-message-container").style.display = "block";
+        document.getElementById("change-password-message").innerHTML = "Repeat New Password field did not match New Password field. Try again.";
+        return;
+    }
+
+    let changePasswordResult = serverstub.changePassword(localStorage.getItem("token"), formData["change-password-old"].value, formData["change-password-new"].value);
+    if (changePasswordResult.success) {
+        document.getElementById("change-password-message-container").style["background-color"] = "#86d876";
+    }
+    else {
+        document.getElementById("change-password-message-container").style["background-color"] = "rgb(231, 126, 126)";
+    }
+    document.getElementById("change-password-message-container").style.display = "block";
+    document.getElementById("change-password-message").innerHTML = changePasswordResult.message;
+}
+
+
+function logOut() {
+    token = localStorage.getItem("token");
+    serverstub.signOut(token);
+    localStorage.removeItem("token");
+    displayView();
 }

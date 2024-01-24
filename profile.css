@@ -44,3 +44,57 @@ body {
 #account-panel {
     display: none;
 }
+
+#account-panel {
+    text-align: center;
+}
+
+.centered-container {
+    width: 400px;
+    padding-bottom: 5px;
+    border-radius: 10px;
+    margin: 10px auto;
+    padding-top: 10px;
+    background-color: white;
+}
+
+.change-password-field-container {
+    margin-bottom: 15px;
+    display: flow-root;
+}
+
+.centered-container div input {
+    float: right;
+    margin-right: 20px;
+}
+
+.centered-container div label {
+    float: left;
+    margin-left: 20px;
+}
+
+.centered-container h3 {
+    margin-top: 0;
+}
+
+#change-password {
+    background-color: #f79f07;
+    margin-bottom: 5px;
+}
+
+#change-password-message-container {
+    display: none;
+    width: 80%;
+    background-color: rgb(231, 126, 126);
+    border: 2px solid;
+    margin: 10px auto 5px auto;
+    text-align: center;
+}
+
+#change-password-message {
+    margin: 5px;
+}
+
+#log-out {
+    background-color: red;
+}
