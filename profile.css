@@ -47,7 +47,7 @@ body {
 
 .centered-container {
     text-align: center;
-    width: 400px;
+    width: 450px;
     padding-bottom: 5px;
     border-radius: 10px;
     margin: 10px auto;
@@ -82,7 +82,7 @@ body {
     background-color: rgb(223, 41, 41);
 }
 
-#change-password-message-container {
+.status-message-container {
     display: none;
     width: 80%;
     background-color: rgb(231, 126, 126);
@@ -91,11 +91,15 @@ body {
     text-align: center;
 }
 
-#change-password-message {
+.status-message-container p{
     margin: 5px;
 }
 
 textarea {
     width: 80%;
     height: 50px;
+}
+
+#user-home-page {
+    display: none;
 }

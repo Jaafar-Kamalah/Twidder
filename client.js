@@ -6,13 +6,11 @@ displayView = function () {
     }
     else {
         document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
-
-        // Load account information in home tab
         let accountInformation = serverstub.getUserDataByToken(token).data;
-        document.getElementById("account-information").innerHTML = 
-        "Email: " + accountInformation.email + "<br>First Name: " + accountInformation.firstname + 
-        "<br>Family Name: " + accountInformation.familyname + "<br>Gender: " + accountInformation.gender +
-         "<br>City: " + accountInformation.city + "<br>Country: " + accountInformation.country;
+        populateAccountInformation(accountInformation, "account-information");
+
+         // Load messages in wall
+         refreshWall();
     }
 
 };
@@ -21,6 +19,13 @@ window.onload = function () {
     //You shall put your own custom code here.
     displayView();
 };
+
+function populateAccountInformation(accountInformation, paragraphID) {
+    document.getElementById(paragraphID).innerHTML = 
+        "<strong>Email: </strong>" + accountInformation.email + "<br><strong>First Name: </strong>" + accountInformation.firstname + 
+        "<br><strong>Family Name: </strong>" + accountInformation.familyname + "<br><strong>Gender: </strong>" + accountInformation.gender +
+         "<br><strong>City: </strong>" + accountInformation.city + "<br><strong>Country: </strong>" + accountInformation.country;
+}
 
 function Login(formData) {
     var email = formData["login-email"].value;
@@ -126,15 +131,52 @@ function postMessage(formData) {
     }
     let token = localStorage.getItem("token");
     serverstub.postMessage(token, formData.post.value, serverstub.getUserDataByToken(token).data.email);
-    console.log(formData.post.value);
     document.getElementById("post").value = "";
+    refreshWall();
 }
 
 function refreshWall() {
-    messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
+    let messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
     document.getElementById("message-wall").innerHTML = "";
     for (const message of messages) {
         console.log(message);
-        document.getElementById("message-wall").innerHTML += "<hr>" + message.content;
+        document.getElementById("message-wall").innerHTML += "<hr><strong>" + message.writer + ": </strong>" + message.content;
+    }
+}
+
+function findUser(formData) {
+    localStorage.setItem("otherUserEmail", formData["user-email"].value);
+    let getUserResult = serverstub.getUserDataByEmail(localStorage.getItem("token"), formData["user-email"].value);
+
+    if (getUserResult.success)
+    {
+        document.getElementById("user-search-error").style.display = "none";
+        userData = getUserResult.data;
+        document.getElementById("user-home-page").style.display = "block";
+        populateAccountInformation(userData, "user-information");
+        refreshOtherUserWall();
+    }
+    else {
+        document.getElementById("user-search-error").style.display = "block";
+        document.getElementById("user-search-error-message").innerHTML = getUserResult.message;
+    }
+}
+
+function postOtherUserMessage(formData) {
+    if (formData["post-other-user"].value == "") {
+        return;
+    }
+    let token = localStorage.getItem("token");
+    serverstub.postMessage(token, formData["post-other-user"].value, localStorage.getItem("otherUserEmail"));
+    document.getElementById("post-other-user").value = "";
+    refreshOtherUserWall();
+}
+
+function refreshOtherUserWall() {
+    let messages = serverstub.getUserMessagesByEmail(localStorage.getItem("token"), localStorage.getItem("otherUserEmail")).data;
+    document.getElementById("other-user-message-wall").innerHTML = "";
+    for (const message of messages) {
+        console.log(message);
+        document.getElementById("other-user-message-wall").innerHTML += "<hr><strong>" + message.writer + ": </strong>" + message.content;
     }
 }

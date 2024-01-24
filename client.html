@@ -88,13 +88,13 @@
     <script id="profile-view" type='text/html'>
         <div id="panel">
             <div class="tab" id="home-tab" onclick='selectTab("home")'>
-                <h2>Home<h2>
+                <h2>Home</h2>
             </div>
             <div class="tab" id="browse-tab" onclick='selectTab("browse")'>
-                <h2>Browse<h2>
+                <h2>Browse</h2>
             </div>
             <div class="tab" id="account-tab" onclick='selectTab("account")'>
-                <h2>Account<h2>
+                <h2>Account</h2>
             </div>
         </div>
 
@@ -116,9 +116,40 @@
                 <p id="message-wall"></p>
             </div>
         </div>
+
         <div class="panel" id="browse-panel">
-            <p>Browse content</p>
+            <div class="centered-container">
+                <h3>User Search</h3>
+                <form action="#" onsubmit='findUser(this);return false;'>
+                    <div class="change-password-field-container">
+                        <label for="user-email">User's Email</label>
+                        <input id="user-email" type="email" name="user-email" required />
+                    </div>
+                    <input class="btn green" type="submit" value="Search">
+                    <div class="status-message-container" id="user-search-error"><p id="user-search-error-message"></p></div>
+                </form>
+            </div>
+
+            <div id="user-home-page">
+                <div class="centered-container">
+                    <h3>Account Information</h3>
+                    <p id="user-information"></p>
+                </div>
+                <div class="centered-container">
+                    <h3>Post Message</h3>
+                    <form action="#" onsubmit='postOtherUserMessage(this);return false;'>
+                        <textarea id="post-other-user"></textarea>
+                        <input class="btn green" type="submit" value="Post Message">
+                    </form>
+                </div>
+                <div class="centered-container">
+                    <h3>Message Wall</h3>
+                    <button class="btn blue" onclick='refreshOtherUserWall()'>Refresh Wall</button>
+                    <p id="other-user-message-wall"></p>
+                </div>
+            </div>
         </div>
+
         <div class="panel" id="account-panel">
             <div class="centered-container">
                 <h3>Change Password</h3>
@@ -137,14 +168,13 @@
                     </div>
                     <input class="btn orange" type="submit" value="Change Password">
                 </form>
-                <div id="change-password-message-container"><p id="change-password-message"></p></div>
+                <div class="status-message-container" id="change-password-message-container"><p id="change-password-message"></p></div>
             </div>
             <div class="centered-container">
                 <h3>Session</h3>
                 <button class="btn red" onclick='logout()'>Log Out</button>
             </div>
         </div>
-
     </script>
 </head>
 
