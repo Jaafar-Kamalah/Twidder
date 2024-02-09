@@ -16,7 +16,7 @@ def disconnect_db():
         g.db.close()
         g.db = None
 
-def save_user(user_data):
+def add_user(user_data):
     try:
         get_db().execute("insert into users values(?,?,?,?,?,?,?);", 
                          [user_data['email'], user_data['password'], user_data['firstname'],
@@ -27,3 +27,14 @@ def save_user(user_data):
     except Exception as e:
         print(e)
         return False
+    
+def find_user(email):
+    try:
+        cursor = get_db().execute("select password from users where email = ?;", [email])
+        user_password = cursor.fetchone()
+        cursor.close()
+        print(user_password)
+        return user_password[0] if user_password else None
+    except Exception as e:
+        print(e)
+        return None

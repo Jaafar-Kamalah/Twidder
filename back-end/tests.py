@@ -68,7 +68,7 @@ class FlaskAppTests(unittest.TestCase):
         invalid_emails = [f'{invalid_email}@example', f'{invalid_email}@.com', f'{invalid_email}@exa mple.com']
 
         for email in invalid_emails:
-            print("\nnew iteration")
+            print("\nnew iteration with email: " + email)
             data = {
                 'email': email,
                 'password': 'password123',
@@ -129,7 +129,7 @@ class FlaskAppTests(unittest.TestCase):
                 # Catching AssertionError and printing a custom failure message
                 print(f"test_02_sign_up_invalidate_data failed for missing {field}: ❌ {ae}")
 
-"""    def test_03_sign_in(self):
+    def test_03_sign_in(self):
         url = f'{self.base_url}/sign_in'
         passwords = ['password123', 'password1234', None]
         for password in passwords:
@@ -168,7 +168,7 @@ class FlaskAppTests(unittest.TestCase):
                 # Catching AssertionError and printing a custom failure message
                 print(f"test_03_sign_in failed: ❌ {ae}")
 
-    def test_04_change_password(self):
+"""   def test_04_change_password(self):
         url = f'{self.base_url}/change_password'
         token = self.token
         if token is None:

@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 
-import database_helper
+import database_helper, secrets
 
 app = Flask(__name__)
 
@@ -8,25 +8,58 @@ app = Flask(__name__)
 def after_request(exception):
     database_helper.disconnect_db()
 
-@app.route('/sign_up', methods=['POST'])
+def is_valid_email(email):
+    if " " in email or "@" not in email:
+        return False
+    
+    local_part, domain_part = email.split("@")
+
+    if len(local_part) == 0 or len(domain_part) == 0:
+        return False
+    
+    if "." not in domain_part:
+        return False
+    
+    second_lvl_domain, top_lvl_domain = domain_part.split(".")
+
+    if len(second_lvl_domain) == 0 or len(top_lvl_domain) == 0:
+        return False
+
+    return True
+
+@app.route("/sign_up", methods=["POST"])
 def sign_up():
-    data = request.get_json()
-    if 'email' in data and 'password' in data and 'firstname' in data and \
-       'familyname' in data and 'gender' in data and 'city' in data and 'country' in data:
-        if len(data['password']) >= 8:
-            result = database_helper.save_user(data)
+    form_data = request.get_json()
+    if form_data.get("email") is not None and form_data.get("password") is not None and \
+       form_data.get("firstname") is not None and form_data.get("familyname") is not None and \
+       form_data.get("gender") is not None and form_data.get("city") is not None and \
+       form_data.get("country") is not None:
+        if len(form_data["password"]) >= 8 and is_valid_email(form_data["email"]):
+            result = database_helper.add_user(form_data)
             if (result == True):
-                return jsonify(success=True, message="Sign up successful."), 200
+                return jsonify(success=True, message="Sign up successful.")
             else:
-                return jsonify(success=False, message="Account already exists."), 200
+                return jsonify(success=False, message="Account already exists.")
         else:
-            return jsonify(success=False, message="Password too short."), 400
+            return jsonify(success=False, message="Invalid email or password")
     else:
-        return jsonify(success=False, message="Missing sign up values."), 400
+        return jsonify(success=False, message="Missing sign-up values.")
+    
 
-@app.route('/sign_in', methods=['POST'])
+@app.route("/sign_in", methods=["POST"])
 def sign_in():
-    return "halloj!"
+    form_data = request.get_json()
+    if "username" in form_data and "password" in form_data:
+        password = database_helper.find_user(form_data["username"])
+        if form_data["password"] == password:
+            token = secrets.token_hex(16)
+            # database_helper.add_logged_in_user(email, token)
+            return jsonify(success=True, message="Sign in successful", data=token)
+        else:
+            return jsonify(success=False, message="Invalid email or password.")
+    else:
+        return jsonify(success=False, message="Missing sign-in values.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)
