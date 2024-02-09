@@ -1,0 +1,1 @@
+Is it okay to return 200 when trying to register with email that already exists? (Is that not misleading?)

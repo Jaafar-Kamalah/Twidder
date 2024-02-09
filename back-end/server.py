@@ -18,7 +18,7 @@ def sign_up():
             if (result == True):
                 return jsonify(success=True, message="Sign up successful."), 200
             else:
-                return jsonify(success=False, message="Account already exists."), 400
+                return jsonify(success=False, message="Account already exists."), 200
         else:
             return jsonify(success=False, message="Password too short."), 400
     else:
