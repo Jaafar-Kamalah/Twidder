@@ -24,7 +24,6 @@ class FlaskAppTests(unittest.TestCase):
         url = f'{self.base_url}/sign_up'
         emails = [self.user_email, self.user_email, self.user_email_2]
         for index, email in enumerate(emails):
-            print("\nnew iteration with email: " + email)
             data = {
                 'email': email,
                 'password': 'password123',
@@ -68,7 +67,6 @@ class FlaskAppTests(unittest.TestCase):
         invalid_emails = [f'{invalid_email}@example', f'{invalid_email}@.com', f'{invalid_email}@exa mple.com']
 
         for email in invalid_emails:
-            print("\nnew iteration with email: " + email)
             data = {
                 'email': email,
                 'password': 'password123',
@@ -168,7 +166,7 @@ class FlaskAppTests(unittest.TestCase):
                 # Catching AssertionError and printing a custom failure message
                 print(f"test_03_sign_in failed: ❌ {ae}")
 
-"""   def test_04_change_password(self):
+    """ def test_04_change_password(self):
         url = f'{self.base_url}/change_password'
         token = self.token
         if token is None:
@@ -543,7 +541,7 @@ class FlaskAppTests(unittest.TestCase):
                 self.fail(f"RequestException occurred: {e}")
             except AssertionError as ae:
                 # Catching AssertionError and printing a custom failure message
-                print(f"test_09_get_user_messages_by_email failed: ❌ {ae}")
+                print(f"test_09_get_user_messages_by_email failed: ❌ {ae}") """
 
     def test_10_sign_out(self):
         url = f'{self.base_url}/sign_out'
@@ -578,7 +576,7 @@ class FlaskAppTests(unittest.TestCase):
                 self.fail(f"RequestException occurred: {e}")
             except AssertionError as ae:
                 # Catching AssertionError and printing a custom failure message
-                print(f"test_10_sign_out failed: ❌ {ae}") """
+                print(f"test_10_sign_out failed: ❌ {ae}")
 
 
 def contains_true(json_data):

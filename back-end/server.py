@@ -60,17 +60,21 @@ def sign_in():
     else:
         return jsonify(success=False, message="Missing sign-in values.")
 
-@app.route("/sign_out", methods=["POST"])
+@app.route("/sign_out", methods=["DELETE"])
 def sign_out():
-    form_data = request.get_json()
-    if "token" in form_data:
-        sucess = database_helper.remove_logged_in_user(form_data["token"])
+    token = request.headers.get('Authorization')
+    if token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        sucess = database_helper.remove_logged_in_user(token)
         if sucess:
             return jsonify(success=True, message="Sign out successful")
         else:
-            return jsonify(success=False, message="Invalid token.")
+            return jsonify(success=False, message="Invalid token: '" + token + "'")
     else:
-        return jsonify(success=False, message="Missing token value.")
+        return jsonify(success=False, message="Missing token in Authorization header.")
 
 if __name__ == "__main__":
     app.run(debug=True)
