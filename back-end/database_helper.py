@@ -34,7 +34,34 @@ def find_user(email):
         user_password = cursor.fetchone()
         cursor.close()
         print(user_password)
-        return user_password[0] if user_password else None
+        # Return first element if list is not empty, otherwise return None
+        return user_password[0] if user_password else None 
     except Exception as e:
         print(e)
         return None
+    
+def add_logged_in_user(email, token):
+    try:
+        get_db().execute("insert into loggedInUsers values(?,?);", 
+                         [token, email])
+        get_db().commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def remove_logged_in_user(token):
+    try:
+        cursor = get_db().execute("select email from loggedInUsers where token = ?;", [token])
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user != None:
+            get_db().execute("delete from loggedInUsers where token = ?;", [token])
+            get_db().commit()
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False

@@ -35,8 +35,8 @@ def sign_up():
        form_data.get("gender") is not None and form_data.get("city") is not None and \
        form_data.get("country") is not None:
         if len(form_data["password"]) >= 8 and is_valid_email(form_data["email"]):
-            result = database_helper.add_user(form_data)
-            if (result == True):
+            sucess = database_helper.add_user(form_data)
+            if (sucess == True):
                 return jsonify(success=True, message="Sign up successful.")
             else:
                 return jsonify(success=False, message="Account already exists.")
@@ -53,13 +53,24 @@ def sign_in():
         password = database_helper.find_user(form_data["username"])
         if form_data["password"] == password:
             token = secrets.token_hex(16)
-            # database_helper.add_logged_in_user(email, token)
+            database_helper.add_logged_in_user(form_data["username"], token) # Function should not fail due to user input, do we need to handle fails either way?
             return jsonify(success=True, message="Sign in successful", data=token)
         else:
             return jsonify(success=False, message="Invalid email or password.")
     else:
         return jsonify(success=False, message="Missing sign-in values.")
 
+@app.route("/sign_out", methods=["POST"])
+def sign_out():
+    form_data = request.get_json()
+    if "token" in form_data:
+        sucess = database_helper.remove_logged_in_user(form_data["token"])
+        if sucess:
+            return jsonify(success=True, message="Sign out successful")
+        else:
+            return jsonify(success=False, message="Invalid token.")
+    else:
+        return jsonify(success=False, message="Missing token value.")
 
 if __name__ == "__main__":
     app.run(debug=True)
