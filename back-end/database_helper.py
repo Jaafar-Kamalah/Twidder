@@ -89,3 +89,24 @@ def change_user_password(email, new_password):
     except Exception as e:
         print(e)
         return False
+    
+def add_message(writer, receiver, message):
+    try:
+        get_db().execute("INSERT INTO messages VALUES(?,?,?);", 
+                         [writer, receiver, message])
+        get_db().commit()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+def find_messages(email):
+    try:
+        cursor = get_db().execute("SELECT writer, content FROM messages WHERE receiver = ?;", [email])
+        messages = cursor.fetchall()
+        cursor.close()
+        # Return messages if not empty, else return None
+        return messages if messages else None
+    except Exception as e:
+        print(e)
+        return False

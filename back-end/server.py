@@ -145,6 +145,72 @@ def get_user_data_by_email(email):
             return jsonify(success=False, message="Invalid token: '" + token + "'")
     else:
         return jsonify(success=False, message="Missing token in Authorization header.")
+    
+@app.route("/post_message", methods=["POST"])
+def post_message():
+    form_data = request.get_json()
+    token = request.headers.get('Authorization')
+    
+    if form_data.get("email") is not None and form_data.get("message") is not None and token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        if form_data["message"] == "":
+            return jsonify(success=False, message="Message empty.")
+        
+        writer = database_helper.find_logged_in_user(token)
+        if writer == None:
+            return jsonify(success=False, message="Token invalid.")
+        
+        receiver = database_helper.find_user(form_data["email"])
+        if receiver == None:
+            return jsonify(success=False, message="No user found with email.")
+
+        database_helper.add_message(writer, receiver["email"], form_data["message"])
+        return jsonify(success=True, message="Message post successful!")
+    else:
+        return jsonify(success=False, message="Missing post-message values.")
+    
+@app.route("/get_user_messages_by_token", methods=["GET"])
+def get_user_messages_by_token():
+    token = request.headers.get('Authorization')
+    if token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        email = database_helper.find_logged_in_user(token)
+        if email:
+            messages = database_helper.find_messages(email)
+            return jsonify(success=True, message="Message retrieval successful!", \
+                           data=messages)
+        else:
+            return jsonify(success=False, message="Invalid token: '" + token + "'")
+    else:
+        return jsonify(success=False, message="Missing token in Authorization header.")
+    
+@app.route("/get_user_messages_by_email/<email>", methods=["GET"])
+def get_user_messages_by_email(email):
+    token = request.headers.get('Authorization')
+    if token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        success = database_helper.find_logged_in_user(token)
+        if success:
+            user_info = database_helper.find_user(email)
+            if user_info is not None:
+                messages = database_helper.find_messages(user_info["email"])
+                return jsonify(success=True, message="Message retrieval successful!", \
+                               data=messages)
+            else:
+                return jsonify(success=False, message="No user with email.")
+        else:
+            return jsonify(success=False, message="Invalid token: '" + token + "'")
+    else:
+        return jsonify(success=False, message="Missing get-user-messages-by-email values.")
 
 if __name__ == "__main__":
     app.run(debug=True)
