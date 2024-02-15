@@ -35,6 +35,7 @@ def find_user(email):
         cursor.close()
         if user_info_tuple:
             user_info = {
+                "email" : email,
                 "password" : user_info_tuple[1],
                 "firstname" : user_info_tuple[2],
                 "familyname" : user_info_tuple[3],

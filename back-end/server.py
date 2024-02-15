@@ -38,8 +38,8 @@ def sign_up():
        form_data.get("gender") is not None and form_data.get("city") is not None and \
        form_data.get("country") is not None:
         if is_valid_password(form_data["password"]) and is_valid_email(form_data["email"]):
-            sucess = database_helper.add_user(form_data)
-            if (sucess == True):
+            success = database_helper.add_user(form_data)
+            if (success == True):
                 return jsonify(success=True, message="Sign up successful!")
             else:
                 return jsonify(success=False, message="Account already exists.")
@@ -71,8 +71,8 @@ def sign_out():
         if token.startswith("Bearer "):
             token = token.split(" ")[1]
 
-        sucess = database_helper.find_logged_in_user(token)
-        if sucess:
+        success = database_helper.find_logged_in_user(token)
+        if success:
             database_helper.delete_logged_in_user(token)
             return jsonify(success=True, message="Sign out successful!")
         else:
@@ -104,6 +104,47 @@ def change_password():
             return jsonify(success=False, message="Invalid new password")
     else:
         return jsonify(success=False, message="Missing change-password values.")
+    
+@app.route("/get_user_data_by_token", methods=["GET"])
+def get_user_data_by_token():
+    token = request.headers.get('Authorization')
+    if token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        email = database_helper.find_logged_in_user(token)
+        if email:
+            user_info = database_helper.find_user(email)
+            user_info.pop("password")
+            return jsonify(success=True, message="User info retrieval successful!", \
+                           data=user_info)
+        else:
+            return jsonify(success=False, message="Invalid token: '" + token + "'")
+    else:
+        return jsonify(success=False, message="Missing token in Authorization header.")
+    
+@app.route("/get_user_data_by_email/<email>", methods=["GET"])
+def get_user_data_by_email(email):
+    token = request.headers.get('Authorization')
+    if email is not None and token:
+        # Postman adds "Berer " to token but not tests.py
+        if token.startswith("Bearer "):
+            token = token.split(" ")[1]
+
+        success = database_helper.find_logged_in_user(token)
+        if success:
+            user_info = database_helper.find_user(email)
+            if user_info != None:
+                user_info.pop("password")
+                return jsonify(success=True, message="User info retrieval successful!", \
+                           data=user_info)
+            else:
+                return jsonify(success=False, message="User with email does not exist.")
+        else:
+            return jsonify(success=False, message="Invalid token: '" + token + "'")
+    else:
+        return jsonify(success=False, message="Missing token in Authorization header.")
 
 if __name__ == "__main__":
     app.run(debug=True)

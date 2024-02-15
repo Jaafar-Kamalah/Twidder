@@ -230,7 +230,7 @@ class FlaskAppTests(unittest.TestCase):
                 # Catching AssertionError and printing a custom failure message
                 print(f"test_04_change_password failed: ❌ {ae}")
 
-    """def test_05_get_user_data_by_token(self):
+    def test_05_get_user_data_by_token(self):
         url = f'{self.base_url}/get_user_data_by_token'
         token = self.token
         if token is None:
@@ -341,7 +341,7 @@ class FlaskAppTests(unittest.TestCase):
                 # Catching AssertionError and printing a custom failure message
                 print(f"test_06_get_user_data_by_email failed: ❌ {ae}")
 
-    def test_07_post_message(self):
+    """def test_07_post_message(self):
         url = f'{self.base_url}/post_message'
         token = self.token
         if token is None:
