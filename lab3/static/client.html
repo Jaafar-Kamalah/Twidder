@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Twidder</title>
+    <link href="welcome.css" type="text/css" rel="stylesheet">
+    <link href="profile.css" type="text/css" rel="stylesheet">
+    <script src="client.js" type="text/javascript"></script>
+    <script src="../serverstub.js" type="text/javascript"></script>
+    <script id="welcome-view" type='text/html'>
+        <div class="welcome-view-body">
+            <div class="logo-container">
+                <img src="Twidder_custom_logo.png" alt="Twidder logo and slogan.">
+            </div>
+        
+            <div class="login-container">
+                <form action="#" onsubmit='Login(this);return false;'>
+                    <div>
+                        <label for="login-email">Email</label>
+                        <input id="login-email" name="login-email" type="email" required>
+                    </div>
+        
+                    <div>
+                        <label for="login-password">Password</label>
+                        <input id="login-password" name="login-password" type="password" minlength="8" required>
+                    </div>
+        
+                    <input class="btn blue" type="submit" value="Login">
+                </form>
+            </div>
+        
+            <div class="signup-container">
+                <form action="#" onsubmit='Signup(this);return false;'>
+                    <div>
+                        <label for="first-name">First Name</label>
+                        <input id="first-name" name="first-name" type="text" required>
+                    </div>
+        
+                    <div>
+                        <label for="family-name">Family Name</label>
+                        <input id="family-name" name="family-name" type="text" required>
+                    </div>
+        
+                    <div>
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+        
+                    </div>
+        
+                    <div>
+                        <label for="city">City</label>
+                        <input id="city" name="city" type="text" required>
+                    </div>
+        
+                    <div>
+                        <label for="country">Country</label>
+                        <input id="country" name="country" type="text" required>
+                    </div>
+        
+                    <div>
+                        <label for="signup-email">Email</label>
+                        <input id="signup-email" name="signup-email" type="email" required>
+                    </div>
+        
+                    <div>
+                        <label for="signup-password">Password</label>
+                        <input id="signup-password" name="signup-password" type="password" minlength="8" required>
+        
+                    </div>
+        
+                    <div>
+                        <label for="signup-repeat-password">Repeat PSW</label>
+                        <input id="signup-repeat-password" name="signup-reapeat-password" type="password" required>
+                    </div>
+        
+                    <input class="btn green" type="submit" value="Sign Up">
+                </form>
+            </div>
+        </div>
+        
+        <div id="welcome-error">      
+            <p id="welcome-error-message"></p>
+        </div>
+    </script>
+    <script id="profile-view" type='text/html'>
+        <div id="panel">
+            <div class="tab" id="home-tab" onclick='selectTab("home")'>
+                <h2>Home</h2>
+            </div>
+            <div class="tab" id="browse-tab" onclick='selectTab("browse")'>
+                <h2>Browse</h2>
+            </div>
+            <div class="tab" id="account-tab" onclick='selectTab("account")'>
+                <h2>Account</h2>
+            </div>
+        </div>
+
+        <div class="panel" id="home-panel">
+            <div class="centered-container">
+                <h3>Account Information</h3>
+                <p id="account-information"></p>
+            </div>
+            <div class="centered-container">
+                <h3>Post Message</h3>
+                <form action="#" onsubmit='postMessage(this);return false;'>
+                    <textarea id="post"></textarea>
+                    <input class="btn green" type="submit" value="Post Message">
+                </form>
+            </div>
+            <div class="centered-container">
+                <h3>Message Wall</h3>
+                <button class="btn blue" onclick='refreshWall()'>Refresh Wall</button>
+                <p id="message-wall"></p>
+            </div>
+        </div>
+
+        <div class="panel" id="browse-panel">
+            <div class="centered-container">
+                <h3>User Search</h3>
+                <form action="#" onsubmit='findUser(this);return false;'>
+                    <div class="change-password-field-container">
+                        <label for="user-email">User's Email</label>
+                        <input id="user-email" type="email" name="user-email" required />
+                    </div>
+                    <input class="btn green" type="submit" value="Search">
+                    <div class="status-message-container" id="user-search-error"><p id="user-search-error-message"></p></div>
+                </form>
+            </div>
+
+            <div id="user-home-page">
+                <div class="centered-container">
+                    <h3>Account Information</h3>
+                    <p id="user-information"></p>
+                </div>
+                <div class="centered-container">
+                    <h3>Post Message</h3>
+                    <form action="#" onsubmit='postOtherUserMessage(this);return false;'>
+                        <textarea id="post-other-user"></textarea>
+                        <input class="btn green" type="submit" value="Post Message">
+                    </form>
+                </div>
+                <div class="centered-container">
+                    <h3>Message Wall</h3>
+                    <button class="btn blue" onclick='refreshOtherUserWall()'>Refresh Wall</button>
+                    <p id="other-user-message-wall"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="account-panel">
+            <div class="centered-container">
+                <h3>Change Password</h3>
+                <form action="#" onsubmit='ChangePassword(this);return false;'>
+                    <div class="change-password-field-container"> 
+                    <label for="change-password-old">Old Password </label>
+                        <input id="change-password-old" type="password" name="change-password-old" required/>
+                    </div>
+                    <div class="change-password-field-container"> 
+                        <label for="change-password-new">New Password </label>
+                        <input id="change-password-new" type="password" name="change-password-new" minlength="8" required/>
+                    </div>
+                    <div class="change-password-field-container"> 
+                        <label for="change-password-repeat">Repeat New Password </label>
+                        <input id="change-password-repeat" type="password" name="change-password-repeat" required/>
+                    </div>
+                    <input class="btn orange" type="submit" value="Change Password">
+                </form>
+                <div class="status-message-container" id="change-password-message-container"><p id="change-password-message"></p></div>
+            </div>
+            <div class="centered-container">
+                <h3>Session</h3>
+                <button class="btn red" onclick='logout()'>Log Out</button>
+            </div>
+        </div>
+    </script>
+</head>
+
+<body>
+    <div id="view">
+    </div>
+</body>
+
+</html>
