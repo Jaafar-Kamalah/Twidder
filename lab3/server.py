@@ -4,6 +4,10 @@ import database_helper, secrets
 
 app = Flask(__name__)
 
+@app.route('/')
+def root():
+    return app.send_static_file("client.html")
+
 @app.teardown_request
 def after_request(exception):
     database_helper.disconnect_db()
