@@ -6,8 +6,18 @@ displayView = function () {
     }
     else {
         document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
-        let accountInformation = serverstub.getUserDataByToken(token).data;
-        populateAccountInformation(accountInformation, "account-information");
+
+        // Get user information with token to populate account information
+        let request = new XMLHttpRequest();
+        request.open("GET", "/get_user_data_by_token", true);
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                populateAccountInformation(response.data, "account-information");
+            }
+        }
+        request.setRequestHeader("Authorization", token);
+        request.send();
 
          // Load messages in wall
          refreshWall();
@@ -28,18 +38,32 @@ function populateAccountInformation(accountInformation, paragraphID) {
 }
 
 function Login(formData) {
-    var email = formData["login-email"].value;
-    var password = formData["login-password"].value;
-    let loginResult = serverstub.signIn(email, password);
+    let loginData ={
+        username: formData["login-email"].value,
+        password: formData["login-password"].value
+    }
 
-    if (loginResult.success) {
-        localStorage.setItem("token", loginResult.data)
-        displayView();
+    let request = new XMLHttpRequest();
+    request.open("POST", "/sign_in", true);
+
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.success) {
+
+                localStorage.setItem("token", response.data);
+                localStorage.setItem("email", loginData.username)
+                displayView();
+            }
+            else {
+                document.getElementById("welcome-error").style.display = "block";
+                document.getElementById("welcome-error-message").innerHTML = response.message;
+            }
+        }
     }
-    else {
-        document.getElementById("welcome-error").style.display = "block";
-        document.getElementById("welcome-error-message").innerHTML = loginResult.message;
-    }
+
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    request.send(JSON.stringify(loginData));
 }
 
 function Signup(formData) {
@@ -61,19 +85,29 @@ function Signup(formData) {
         country: formData["country"].value
     };
 
-    console.log(account);
+    let request = new XMLHttpRequest();
+    request.open("POST", "/sign_up", true);
 
-    var signupResult = serverstub.signUp(account);
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.success) {
+                // Object simulating formData structure
+                let loginData = {
+                    "login-email": { value: account.email },
+                    "login-password": { value: account.password}
+                };
+                Login(loginData)
+            }
+            else {
+                document.getElementById("welcome-error").style.display = "block";
+                document.getElementById("welcome-error-message").innerHTML = response.message;
+            }
+        }
+    }
 
-    if (signupResult.success) {
-        let loginResult = serverstub.signIn(account.email, account.password);
-        localStorage.setItem("token", loginResult.data)
-        displayView();
-    }
-    else {
-        document.getElementById("welcome-error").style.display = "block";
-        document.getElementById("welcome-error-message").innerHTML = signupResult.message;
-    }
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+    request.send(JSON.stringify(account));
 }
 
 function selectTab(selected) {
@@ -106,22 +140,44 @@ function ChangePassword(formData) {
         return;
     }
 
-    let changePasswordResult = serverstub.changePassword(localStorage.getItem("token"), formData["change-password-old"].value, formData["change-password-new"].value);
-    if (changePasswordResult.success) {
-        document.getElementById("change-password-message-container").style["background-color"] = "#86d876";
+    let request = new XMLHttpRequest();
+    request.open("PUT", "/change_password", true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.success) {
+                document.getElementById("change-password-message-container").style["background-color"] = "#86d876";
+            }
+            else {
+                document.getElementById("change-password-message-container").style["background-color"] = "rgb(231, 126, 126)";
+            }
+            document.getElementById("change-password-message-container").style.display = "block";
+            document.getElementById("change-password-message").innerHTML = response.message;
+        }
     }
-    else {
-        document.getElementById("change-password-message-container").style["background-color"] = "rgb(231, 126, 126)";
-    }
-    document.getElementById("change-password-message-container").style.display = "block";
-    document.getElementById("change-password-message").innerHTML = changePasswordResult.message;
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+
+    let passwordData ={
+        oldpassword: formData["change-password-old"].value,
+        newpassword: formData["change-password-new"].value
+    };
+    request.send(JSON.stringify(passwordData));
 }
 
 function logout() {
-    token = localStorage.getItem("token");
-    serverstub.signOut(token);
+    let request = new XMLHttpRequest();
+    request.open("DELETE", "/sign_out", true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            displayView();
+        }
+    }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.send();
+
     localStorage.removeItem("token");
-    displayView();
+    localStorage.removeItem("email");
 }
 
 
@@ -129,54 +185,115 @@ function postMessage(formData) {
     if (formData.post.value == "") {
         return;
     }
-    let token = localStorage.getItem("token");
-    serverstub.postMessage(token, formData.post.value, serverstub.getUserDataByToken(token).data.email);
+
+    let request = new XMLHttpRequest();
+    request.open("POST", "/post_message", true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            refreshWall();
+        }
+    }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+
+    let postData ={
+        email: localStorage.getItem("email"),
+        message: formData.post.value
+    };
+    request.send(JSON.stringify(postData));
+
+    // Clear the text area
     document.getElementById("post").value = "";
-    refreshWall();
 }
 
 function refreshWall() {
-    let messages = serverstub.getUserMessagesByToken(localStorage.getItem("token")).data;
-    document.getElementById("message-wall").innerHTML = "";
-    for (const message of messages) {
-        console.log(message);
-        document.getElementById("message-wall").innerHTML += "<hr><strong>" + message.writer + ": </strong>" + message.content;
+    let request = new XMLHttpRequest();
+    request.open("GET", "/get_user_messages_by_token", true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.data != null)
+            {
+                for (const message of response.data) {
+                    document.getElementById("message-wall").innerHTML += "<hr><strong>" + message[0] + ": </strong>" + message[1];
+                }
+            }
+        }
     }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.send();
+
+    document.getElementById("message-wall").innerHTML = "";
 }
 
 function findUser(formData) {
-    localStorage.setItem("otherUserEmail", formData["user-email"].value);
-    let getUserResult = serverstub.getUserDataByEmail(localStorage.getItem("token"), formData["user-email"].value);
 
-    if (getUserResult.success)
-    {
-        document.getElementById("user-search-error").style.display = "none";
-        userData = getUserResult.data;
-        document.getElementById("user-home-page").style.display = "block";
-        populateAccountInformation(userData, "user-information");
-        refreshOtherUserWall();
+    let request = new XMLHttpRequest();
+    request.open("GET", "/get_user_data_by_email/" + formData["user-email"].value, true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.success)
+            {
+                document.getElementById("user-search-error").style.display = "none";
+                userData = response.data;
+                document.getElementById("user-home-page").style.display = "block";
+                populateAccountInformation(userData, "user-information");
+                refreshOtherUserWall();
+            }
+            else {
+                document.getElementById("user-search-error").style.display = "block";
+                document.getElementById("user-search-error-message").innerHTML = response.message;
+            }
+        }
     }
-    else {
-        document.getElementById("user-search-error").style.display = "block";
-        document.getElementById("user-search-error-message").innerHTML = getUserResult.message;
-    }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.send();
+
+    localStorage.setItem("otherUserEmail", formData["user-email"].value);
 }
 
 function postOtherUserMessage(formData) {
     if (formData["post-other-user"].value == "") {
         return;
     }
-    let token = localStorage.getItem("token");
-    serverstub.postMessage(token, formData["post-other-user"].value, localStorage.getItem("otherUserEmail"));
+
+    let request = new XMLHttpRequest();
+    request.open("POST", "/post_message", true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            refreshOtherUserWall();
+        }
+    }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+
+    let postData ={
+        email: localStorage.getItem("otherUserEmail"),
+        message: formData["post-other-user"].value
+    };
+    request.send(JSON.stringify(postData));
+
+    // Clear the text area
     document.getElementById("post-other-user").value = "";
-    refreshOtherUserWall();
 }
 
 function refreshOtherUserWall() {
-    let messages = serverstub.getUserMessagesByEmail(localStorage.getItem("token"), localStorage.getItem("otherUserEmail")).data;
-    document.getElementById("other-user-message-wall").innerHTML = "";
-    for (const message of messages) {
-        console.log(message);
-        document.getElementById("other-user-message-wall").innerHTML += "<hr><strong>" + message.writer + ": </strong>" + message.content;
+    let request = new XMLHttpRequest();
+    request.open("GET", "/get_user_messages_by_email/" + localStorage.getItem("otherUserEmail"), true);
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.data != null)
+            {
+                for (const message of response.data) {
+                    document.getElementById("other-user-message-wall").innerHTML += "<hr><strong>" + message[0] + ": </strong>" + message[1];
+                }
+            }
+        }
     }
+    request.setRequestHeader("Authorization", localStorage.getItem("token"));
+    request.send();
+
+    document.getElementById("other-user-message-wall").innerHTML = "";
 }
