@@ -6,6 +6,20 @@ displayView = function () {
     }
     else {
         document.getElementById("view").innerHTML = document.getElementById("profile-view").innerHTML;
+        // Open new websocket with server for auto-logout functionality
+        let exampleSocket = new WebSocket("ws://localhost:5000/new_socket")
+        exampleSocket.onopen = function() {
+            exampleSocket.send(token);
+          };
+          exampleSocket.onmessage = function(message){
+            if (message.data == "Signed out") {
+                localStorage.removeItem("token");
+                localStorage.removeItem("email");
+                document.getElementById("view").innerHTML = document.getElementById("welcome-view").innerHTML;
+                document.getElementById("welcome-error").style.display = "block";
+                document.getElementById("welcome-error-message").innerHTML = "Account has been logged in from elsewhere.";
+            }
+          };
 
         // Get user information with token to populate account information
         let request = new XMLHttpRequest();

@@ -1,8 +1,19 @@
 from flask import Flask, jsonify, request
+from flask_sock import Sock
 
 import database_helper, secrets
 
 app = Flask(__name__)
+sockets = Sock(app)
+
+open_sockets = {}
+
+@sockets.route("/new_socket")
+def echo_socket(ws):
+    while True:
+        token = ws.receive()
+        email = database_helper.find_logged_in_user(token)
+        open_sockets[email] = ws
 
 @app.route('/')
 def root():
@@ -57,10 +68,18 @@ def sign_up():
 def sign_in():
     form_data = request.get_json()
     if "username" in form_data and "password" in form_data:
-        user_info = database_helper.find_user(form_data["username"])
+        email = form_data["username"]
+        user_info = database_helper.find_user(email)
         if user_info != None and form_data["password"] == user_info["password"]:
+
+            # If user is already logged in in another browser log the old session out
+            token = database_helper.get_token(email)
+            if token != None:
+                open_sockets[email].send("Signed out")
+                database_helper.delete_logged_in_user(token)
+
             token = secrets.token_hex(16)
-            database_helper.add_logged_in_user(form_data["username"], token) # Function should not fail due to user input, do we need to handle fails either way?
+            database_helper.add_logged_in_user(form_data["username"], token) 
             return jsonify(success=True, message="Sign in successful!", data=token)
         else:
             return jsonify(success=False, message="Invalid email or password.")
@@ -75,8 +94,12 @@ def sign_out():
         if token.startswith("Bearer "):
             token = token.split(" ")[1]
 
-        success = database_helper.find_logged_in_user(token)
-        if success:
+        email = database_helper.find_logged_in_user(token)
+        if email:
+            # Close socket
+            open_sockets[email].close
+            del open_sockets[email]
+
             database_helper.delete_logged_in_user(token)
             return jsonify(success=True, message="Sign out successful!")
         else:

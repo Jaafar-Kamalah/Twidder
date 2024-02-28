@@ -59,6 +59,7 @@ def add_logged_in_user(email, token):
     except Exception as e:
         print(e)
         return False
+    
 
 def find_logged_in_user(token):
     try:
@@ -68,6 +69,16 @@ def find_logged_in_user(token):
 
         # Return first element if list is not empty, otherwise return None
         return user_email[0] if user_email else None 
+    except Exception as e:
+        print(e)
+        return False
+    
+def get_token(email):
+    try:
+        cursor = get_db().execute("SELECT token FROM loggedInUsers WHERE email = ?;", [email])
+        user_token = cursor.fetchone()
+        cursor.close()
+        return user_token[0] if user_token else None 
     except Exception as e:
         print(e)
         return False
