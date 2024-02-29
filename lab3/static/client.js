@@ -88,6 +88,14 @@ function Signup(formData) {
         return;
     }
 
+    // Email Validation
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!pattern.test(formData["signup-email"].value)) {
+        document.getElementById("welcome-error").style.display = "block";
+        document.getElementById("welcome-error-message").innerHTML = "Email is not valid.";
+        return;
+    }    
+
     // Parse data from form into an object
     var account = {
         email: formData["signup-email"].value,
@@ -184,14 +192,13 @@ function logout() {
     request.open("DELETE", "/sign_out", true);
     request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("email");
             displayView();
         }
     }
     request.setRequestHeader("Authorization", localStorage.getItem("token"));
     request.send();
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
 }
 
 

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sock import Sock
 
-import database_helper, secrets
+import database_helper, secrets, re
 
 app = Flask(__name__)
 sockets = Sock(app)
@@ -24,23 +24,8 @@ def after_request(exception):
     database_helper.disconnect_db()
 
 def is_valid_email(email):
-    if " " in email or "@" not in email:
-        return False
-    
-    local_part, domain_part = email.split("@")
-
-    if len(local_part) == 0 or len(domain_part) == 0:
-        return False
-    
-    if "." not in domain_part:
-        return False
-    
-    second_lvl_domain, top_lvl_domain = domain_part.split(".")
-
-    if len(second_lvl_domain) == 0 or len(top_lvl_domain) == 0:
-        return False
-
-    return True
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' 
+    return re.match(pattern, email) is not None
 
 def is_valid_password(password):
     return len(password) >= 8
@@ -53,7 +38,7 @@ def sign_up():
        form_data.get("gender") is not None and form_data.get("city") is not None and \
        form_data.get("country") is not None:
         if is_valid_password(form_data["password"]) and is_valid_email(form_data["email"]):
-            success = database_helper.add_user(form_data)
+            success = database_helper.create_user(form_data)
             if (success == True):
                 return jsonify(success=True, message="Sign up successful!")
             else:
@@ -79,7 +64,7 @@ def sign_in():
                 database_helper.delete_logged_in_user(token)
 
             token = secrets.token_hex(16)
-            database_helper.add_logged_in_user(form_data["username"], token) 
+            database_helper.create_logged_in_user(form_data["username"], token) 
             return jsonify(success=True, message="Sign in successful!", data=token)
         else:
             return jsonify(success=False, message="Invalid email or password.")
@@ -97,8 +82,9 @@ def sign_out():
         email = database_helper.find_logged_in_user(token)
         if email:
             # Close socket
-            open_sockets[email].close
-            del open_sockets[email]
+            if (open_sockets.get(email) is not None):
+                open_sockets[email].close()
+                del open_sockets[email]
 
             database_helper.delete_logged_in_user(token)
             return jsonify(success=True, message="Sign out successful!")
@@ -121,7 +107,7 @@ def change_password():
             if email:
                 user_info = database_helper.find_user(email)
                 if user_info["password"] == form_data["oldpassword"]:
-                    database_helper.change_user_password(email, form_data["newpassword"])
+                    database_helper.update_user_password(email, form_data["newpassword"])
                     return jsonify(success=True, message="Password successfully changed!")
                 else:
                     return jsonify(success=False, message="Invalid old password") 
@@ -194,7 +180,7 @@ def post_message():
         if receiver == None:
             return jsonify(success=False, message="No user found with email.")
 
-        database_helper.add_message(writer, receiver["email"], form_data["message"])
+        database_helper.create_message(writer, receiver["email"], form_data["message"])
         return jsonify(success=True, message="Message post successful!")
     else:
         return jsonify(success=False, message="Missing post-message values.")
