@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#panel {
+    height: 40px;
+    background-color: white;
+
+    width: 100%;
+}
+
+#panel div {
+    width: 33.33%;
+    height: 40px;
+    float: left;
+
+    background-color: white;
+    box-sizing: border-box;
+    border-radius: 10px 10px 0 0;
+
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+#panel div:hover {
+    background-color: #F2F2F2;
+}
+
+#panel div h2 {
+    margin-top: 5px;
+}
+
+#home-tab {
+    border-bottom: 4px solid #1877f2;
+    color: #1877f2;
+}
+
+#browse-panel {
+    display: none;
+}
+
+#account-panel {
+    display: none;
+}
+
+.centered-container {
+    text-align: center;
+    width: 450px;
+    padding-bottom: 5px;
+    border-radius: 10px;
+    margin: 10px auto;
+    padding-top: 10px;
+    background-color: white;
+}
+
+.change-password-field-container {
+    margin-bottom: 15px;
+    display: flow-root;
+}
+
+.centered-container div input {
+    float: right;
+    margin-right: 20px;
+}
+
+.centered-container div label {
+    float: left;
+    margin-left: 20px;
+}
+
+.centered-container h3 {
+    margin-top: 0;
+}
+
+.orange {
+    background-color: #f79f07;
+}
+
+.red {
+    background-color: rgb(223, 41, 41);
+}
+
+.status-message-container {
+    display: none;
+    width: 80%;
+    background-color: rgb(231, 126, 126);
+    border: 2px solid;
+    margin: 10px auto 5px auto;
+    text-align: center;
+}
+
+.status-message-container p{
+    margin: 5px;
+}
+
+textarea {
+    width: 80%;
+    height: 50px;
+}
+
+#user-home-page {
+    display: none;
+}
