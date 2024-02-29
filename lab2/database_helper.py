@@ -16,7 +16,7 @@ def disconnect_db():
         g.db.close()
         g.db = None
 
-def add_user(user_data):
+def create_user(user_data):
     try:
         get_db().execute("INSERT INTO users VALUES(?,?,?,?,?,?,?);", 
                          [user_data['email'], user_data['password'], user_data['firstname'],
@@ -50,7 +50,7 @@ def find_user(email):
         print(e)
         return None
     
-def add_logged_in_user(email, token):
+def create_logged_in_user(email, token):
     try:
         get_db().execute("INSERT INTO loggedInUsers VALUES(?,?);", 
                          [token, email])
@@ -81,7 +81,7 @@ def delete_logged_in_user(token):
         print(e)
         return False
     
-def change_user_password(email, new_password):
+def update_user_password(email, new_password):
     try:
         get_db().execute("UPDATE users SET password = ? WHERE email = ?", [new_password, email])
         get_db().commit()
@@ -90,7 +90,7 @@ def change_user_password(email, new_password):
         print(e)
         return False
     
-def add_message(writer, receiver, message):
+def create_message(writer, receiver, message):
     try:
         get_db().execute("INSERT INTO messages VALUES(?,?,?);", 
                          [writer, receiver, message])
