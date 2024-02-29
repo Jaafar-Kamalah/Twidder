@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
-from email_validator import validate_email
 
-import database_helper, secrets
+import database_helper, secrets, re
 
 app = Flask(__name__)
 
@@ -14,11 +13,8 @@ def after_request(exception):
     database_helper.disconnect_db()
 
 def is_valid_email(email):
-    try:
-        email = validate_email(email, check_deliverability=False)
-        return True
-    except:
-        return False
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$' 
+    return re.match(pattern, email) is not None
 
 def is_valid_password(password):
     return len(password) >= 8
