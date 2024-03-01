@@ -85,7 +85,7 @@ function Signup(formData) {
     // Password Validation
     if (formData["signup-password"].value != formData["signup-repeat-password"].value) {
         document.getElementById("welcome-error").style.display = "block";
-        document.getElementById("welcome-error-message").innerHTML = "Repeat PSW field did not match Password field. Try again.";
+        document.getElementById("welcome-error-message").innerHTML = "Repeat PSW field did not match Password field.";
         return;
     }
 

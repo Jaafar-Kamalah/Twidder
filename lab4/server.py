@@ -38,15 +38,20 @@ def sign_up():
        form_data.get("gender") is not None and form_data.get("city") is not None and \
        form_data.get("country") is not None:
         if is_valid_password(form_data["password"]) and is_valid_email(form_data["email"]):
+
+            user_info  = database_helper.find_user(form_data["email"])
+            if (user_info is not None):
+                return jsonify(success=False, message="Email taken."), 409
+
             success = database_helper.create_user(form_data)
             if (success == True):
-                return jsonify(success=True, message="Sign up successful!")
+                return jsonify(success=True, message="Sign up successful!"), 201
             else:
-                return jsonify(success=False, message="Account already exists.")
+                return jsonify(success=False, message="Database threw an exception."), 500
         else:
-            return jsonify(success=False, message="Invalid email or password")
+            return jsonify(success=False, message="Invalid email or password"), 400
     else:
-        return jsonify(success=False, message="Missing sign-up values.")
+        return jsonify(success=False, message="Missing sign-up values."), 400
     
 
 @app.route("/sign_in", methods=["POST"])
@@ -65,11 +70,11 @@ def sign_in():
 
             token = secrets.token_hex(16)
             database_helper.create_logged_in_user(form_data["username"], token) 
-            return jsonify(success=True, message="Sign in successful!", data=token)
+            return jsonify(success=True, message="Sign in successful!", data=token), 200
         else:
-            return jsonify(success=False, message="Invalid email or password.")
+            return jsonify(success=False, message="Invalid email or password."), 401
     else:
-        return jsonify(success=False, message="Missing sign-in values.")
+        return jsonify(success=False, message="Missing sign-in values."), 400
 
 @app.route("/sign_out", methods=["DELETE"])
 def sign_out():
@@ -87,11 +92,11 @@ def sign_out():
                 del open_sockets[email]
 
             database_helper.delete_logged_in_user(token)
-            return jsonify(success=True, message="Sign out successful!")
+            return jsonify(success=True, message="Sign out successful!"), 200
         else:
-            return jsonify(success=False, message="Invalid token: '" + token + "'")
+            return jsonify(success=False, message="Invalid token: '" + token + "'"), 401
     else:
-        return jsonify(success=False, message="Missing token in Authorization header.")
+        return jsonify(success=False, message="Missing token in Authorization header."), 400
     
 @app.route("/change_password", methods=["PUT"])
 def change_password():
@@ -108,15 +113,15 @@ def change_password():
                 user_info = database_helper.find_user(email)
                 if user_info["password"] == form_data["oldpassword"]:
                     database_helper.update_user_password(email, form_data["newpassword"])
-                    return jsonify(success=True, message="Password successfully changed!")
+                    return jsonify(success=True, message="Password successfully changed!"), 200
                 else:
-                    return jsonify(success=False, message="Invalid old password") 
+                    return jsonify(success=False, message="Invalid old password"), 401
             else:
-                return jsonify(success=False, message="Invalid token: '" + token + "'")    
+                return jsonify(success=False, message="Invalid token: '" + token + "'"), 401    
         else:
-            return jsonify(success=False, message="Invalid new password")
+            return jsonify(success=False, message="Invalid new password"), 400
     else:
-        return jsonify(success=False, message="Missing change-password values.")
+        return jsonify(success=False, message="Missing change-password values."), 400
     
 @app.route("/get_user_data_by_token", methods=["GET"])
 def get_user_data_by_token():
@@ -130,12 +135,11 @@ def get_user_data_by_token():
         if email:
             user_info = database_helper.find_user(email)
             user_info.pop("password")
-            return jsonify(success=True, message="User info retrieval successful!", \
-                           data=user_info)
+            return jsonify(success=True, message="User info retrieval successful!", data=user_info), 200
         else:
-            return jsonify(success=False, message="Invalid token: '" + token + "'")
+            return jsonify(success=False, message="Invalid token: '" + token + "'"), 401
     else:
-        return jsonify(success=False, message="Missing token in Authorization header.")
+        return jsonify(success=False, message="Missing token in Authorization header."), 400
     
 @app.route("/get_user_data_by_email/<email>", methods=["GET"])
 def get_user_data_by_email(email):
@@ -150,14 +154,13 @@ def get_user_data_by_email(email):
             user_info = database_helper.find_user(email)
             if user_info != None:
                 user_info.pop("password")
-                return jsonify(success=True, message="User info retrieval successful!", \
-                           data=user_info)
+                return jsonify(success=True, message="User info retrieval successful!", data=user_info), 200
             else:
-                return jsonify(success=False, message="User with email does not exist.")
+                return jsonify(success=False, message="User with email does not exist."), 404
         else:
-            return jsonify(success=False, message="Invalid token: '" + token + "'")
+            return jsonify(success=False, message="Invalid token: '" + token + "'"), 401
     else:
-        return jsonify(success=False, message="Missing token in Authorization header.")
+        return jsonify(success=False, message="Missing token in Authorization header."), 400
     
 @app.route("/post_message", methods=["POST"])
 def post_message():
@@ -174,16 +177,16 @@ def post_message():
         
         writer = database_helper.find_logged_in_user(token)
         if writer == None:
-            return jsonify(success=False, message="Token invalid.")
+            return jsonify(success=False, message="Token invalid."), 401
         
         receiver = database_helper.find_user(form_data["email"])
         if receiver == None:
-            return jsonify(success=False, message="No user found with email.")
+            return jsonify(success=False, message="No user found with email."), 404
 
         database_helper.create_message(writer, receiver["email"], form_data["message"])
-        return jsonify(success=True, message="Message post successful!")
+        return jsonify(success=True, message="Message post successful!"), 201
     else:
-        return jsonify(success=False, message="Missing post-message values.")
+        return jsonify(success=False, message="Missing post-message values."), 400
     
 @app.route("/get_user_messages_by_token", methods=["GET"])
 def get_user_messages_by_token():
@@ -197,11 +200,11 @@ def get_user_messages_by_token():
         if email:
             messages = database_helper.find_messages(email)
             return jsonify(success=True, message="Message retrieval successful!", \
-                           data=messages)
+                           data=messages), 200
         else:
-            return jsonify(success=False, message="Invalid token: '" + token + "'")
+            return jsonify(success=False, message="Invalid token: '" + token + "'"), 401
     else:
-        return jsonify(success=False, message="Missing token in Authorization header.")
+        return jsonify(success=False, message="Missing token in Authorization header."), 400
     
 @app.route("/get_user_messages_by_email/<email>", methods=["GET"])
 def get_user_messages_by_email(email):
@@ -217,13 +220,13 @@ def get_user_messages_by_email(email):
             if user_info is not None:
                 messages = database_helper.find_messages(user_info["email"])
                 return jsonify(success=True, message="Message retrieval successful!", \
-                               data=messages)
+                               data=messages), 200
             else:
-                return jsonify(success=False, message="No user with email.")
+                return jsonify(success=False, message="No user with email."), 404
         else:
-            return jsonify(success=False, message="Invalid token: '" + token + "'")
+            return jsonify(success=False, message="Invalid token: '" + token + "'"), 401
     else:
-        return jsonify(success=False, message="Missing get-user-messages-by-email values.")
+        return jsonify(success=False, message="Missing get-user-messages-by-email values."), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
