@@ -26,9 +26,27 @@ displayView = function () {
         let request = new XMLHttpRequest();
         request.open("GET", "/get_user_data_by_token", true);
         request.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.status == 200) {
+                document.getElementById("account-container").style.display = "none";
                 let response = JSON.parse(this.responseText);
                 populateAccountInformation(response.data, "account-information");
+            }
+            else {
+                document.getElementById("account-container").style.display = "block";
+                switch (this.status) {
+                    case 400:
+                        document.getElementById("account-message").innerHTML = "Account information request missing one or more parameters.";
+                        break;
+                    case 401:
+                        document.getElementById("account-message").innerHTML = "Invalid token: Refresh site.";
+                        break;
+                    case 405:
+                        document.getElementById("account-message").innerHTML = "HTTP method used is not allowed.";
+                        break;
+                    case 500:
+                        document.getElementById("account-message").innerHTML = "Internal server error.";
+                        break;
+                }
             }
         }
         request.setRequestHeader("Authorization", token);
@@ -147,6 +165,9 @@ function Signup(formData) {
                         break;
                     case 405:
                         document.getElementById("welcome-error-message").innerHTML = "HTTP method used is not allowed.";
+                        break;
+                    case 409:
+                        document.getElementById("welcome-error-message").innerHTML = "Email is already used.";
                         break;
                     case 500:
                         document.getElementById("welcome-error-message").innerHTML = "Internal server error.";
