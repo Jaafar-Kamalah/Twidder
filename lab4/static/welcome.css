@@ -50,6 +50,12 @@ body {
     width: 50%;
 }
 
+.login-container div input,
+.signup-container div input {
+    height: 15px;
+
+}
+
 .login-container div label,
 .signup-container div label {
     display: inline-block;
@@ -91,4 +97,18 @@ body {
     margin-right: auto;
     margin-top: 10px;
     text-align: center;
+}
+
+#gallery {
+    background-color: greenyellow;
+    padding-top: 5px;
+    text-align: center;
+    font-size: 21px;
+    border-radius: 10px;
+    height: 60px;
+    width: 200px;
+    display: none;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
 }

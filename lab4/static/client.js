@@ -486,19 +486,34 @@ function refreshOtherUserWall() {
                 }
             }
         }
-
-
-        if (this.readyState == 4 && this.status == 200) {
-            let response = JSON.parse(this.responseText);
-            if (response.data != null) {
-                for (const message of response.data) {
-                    document.getElementById("other-user-message-wall").innerHTML += "<hr><strong>" + message[0] + ": </strong>" + message[1];
-                }
-            }
-        }
     }
     request.setRequestHeader("Authorization", localStorage.getItem("token"));
     request.send();
 
     document.getElementById("other-user-message-wall").innerHTML = "";
 }
+
+function allowDrop(ev) {
+    ev.preventDefault();
+  }
+  
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+    document.getElementById("gallery").style.display = "block";
+  }
+
+  function hideGallery() {
+    document.getElementById("gallery").style.display = "none";
+  }
+  
+  function drop(ev) {
+    ev.preventDefault();
+    var imageID = ev.dataTransfer.getData("text");
+    var imageElement = document.getElementById(imageID);
+    if (imageElement.src.includes("/static/Twidder_custom_logo.png")) {
+        imageElement.src = "/static/Twidder_logo.png";
+    }
+    else {
+        imageElement.src = "/static/Twidder_custom_logo.png";
+    }
+  }

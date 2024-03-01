@@ -9,7 +9,7 @@
     <script id="welcome-view" type='text/html'>
         <div class="welcome-view-body">
             <div class="logo-container">
-                <img src="/static/Twidder_custom_logo.png" alt="Twidder logo and slogan.">
+                <img id="changable-image" src="/static/Twidder_custom_logo.png" alt="Twidder logo and slogan." draggable="true" ondragstart="drag(event)" ondragend="hideGallery()">
             </div>
         
             <div class="login-container">
@@ -83,6 +83,7 @@
         <div id="welcome-error">      
             <p id="welcome-error-message"></p>
         </div>
+        <div id="gallery" ondrop="drop(event)" ondragover="allowDrop(event)">Drop Here to Swap Image!</div>
     </script>
     <script id="profile-view" type='text/html'>
         <div id="panel">
