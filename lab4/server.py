@@ -49,7 +49,7 @@ def sign_up():
             else:
                 return jsonify(success=False, message="Database threw an exception."), 500
         else:
-            return jsonify(success=False, message="Invalid email or password"), 400
+            return jsonify(success=False, message="No email with this password."), 400
     else:
         return jsonify(success=False, message="Missing sign-up values."), 400
     

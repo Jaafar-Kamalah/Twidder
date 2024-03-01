@@ -107,11 +107,13 @@
                 <form action="#" onsubmit='postMessage(this);return false;'>
                     <textarea id="post"></textarea>
                     <input class="btn green" type="submit" value="Post Message">
+                    <div class="status-message-container" id="post-container"><p id="post-message"></p></div>
                 </form>
             </div>
             <div class="centered-container">
                 <h3>Message Wall</h3>
                 <button class="btn blue" onclick='refreshWall()'>Refresh Wall</button>
+                <div class="status-message-container" id="wall-container"><p id="wall-message"></p></div>
                 <p id="message-wall"></p>
             </div>
         </div>
@@ -139,11 +141,13 @@
                     <form action="#" onsubmit='postOtherUserMessage(this);return false;'>
                         <textarea id="post-other-user"></textarea>
                         <input class="btn green" type="submit" value="Post Message">
+                        <div class="status-message-container" id="other-post-container"><p id="other-post-message"></p></div>
                     </form>
                 </div>
                 <div class="centered-container">
                     <h3>Message Wall</h3>
                     <button class="btn blue" onclick='refreshOtherUserWall()'>Refresh Wall</button>
+                    <div class="status-message-container" id="other-wall-container"><p id="other-wall-message"></p></div>
                     <p id="other-user-message-wall"></p>
                 </div>
             </div>
@@ -172,6 +176,7 @@
             <div class="centered-container">
                 <h3>Session</h3>
                 <button class="btn red" onclick='logout()'>Log Out</button>
+                <div class="status-message-container" id="logout-message-container"><p id="logout-message"></p></div>
             </div>
         </div>
     </script>
