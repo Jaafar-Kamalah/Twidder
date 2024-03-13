@@ -1,0 +1,13 @@
+Instructions on how to run Lab4 in LIU enviroment:
+* python3 -m venv env
+* source env/bin/activate
+* pip3 install -r requirements.txt
+* gunicorn -b 0.0.0.0:5000 --workers 1 --threads 100 server:app
+* [ Open this adress in browser: http://0.0.0.0:5000/ ]
+
+Implementation for Lab4:
+* Using HTTP status codes and upgrading the feedback mechanism [2 points] (Mandatory)
+* Use of HTML5 for Drag and Drop [1 point] (Alternative)
+  -> Click and drag logo and slogan image on welcome screen. A green box with text "Drop Here to Swap Image!" should appear below. Drop image in the box to swap it.
+  -> Implemented functions found at the end of client.js (allowDrop, drag, hideGallery and drop)
+Total = 3 points
