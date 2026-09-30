@@ -1,3 +1,0 @@
-Should you return http status codes from server?
-	Is it okay to return 200 when trying to register with email that already exists? (Is that not misleading?)
-In signup do we need to check that each value does not exceed sql varchar threshold (50 charachters)?
