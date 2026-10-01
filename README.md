@@ -30,3 +30,5 @@ source venv/bin/activate
 pip install -r requirements.txt
 python3 server.py
 ```
+
+> Note: Created in 2024 and later uploaded to GitHub. No Git history is available as development was done locally without version control.
